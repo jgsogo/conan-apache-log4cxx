@@ -1,4 +1,5 @@
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
+from conans.tools import os_info, SystemPackageTool
 import os
 
 class Apachelog4cxxConan(ConanFile):
@@ -22,6 +23,10 @@ class Apachelog4cxxConan(ConanFile):
     exports_sources = "char_widening.patch"
 
     def source(self):
+        if os_info.is_linux:
+            installer = SystemPackageTool()
+            installer.install("subversion")
+
         self.run('svn checkout -r ' + self.revision + " http://svn.apache.org/repos/asf/incubator/log4cxx/trunk " + self.lib_name)
         if not self.settings.os == "Windows":
             with tools.chdir(self.lib_name):

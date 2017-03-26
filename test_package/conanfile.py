@@ -1,10 +1,8 @@
 from conans import ConanFile, CMake, RunEnvironment, tools
 import os
 
-
 channel = os.getenv("CONAN_CHANNEL", "stable")
 username = os.getenv("CONAN_USERNAME", "mkovalchik")
-
 
 class Apachelog4cxxTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"

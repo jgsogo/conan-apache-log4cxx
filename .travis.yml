@@ -1,0 +1,21 @@
+os: linux
+services:
+  - docker
+sudo: required
+language: python
+env:
+  global:
+    - CONAN_UPLOAD=1
+    - CONAN_REFERENCE="apache-log4cxx/0.11.0-rev+1788752"
+    - CONAN_USERNAME="mkovalchik"
+    - CONAN_CHANNEL="stable"
+    - CONAN_TOTAL_PAGES=1
+    - CONAN_CURRENT_PAGE=1
+
+  matrix:
+    - CONAN_GCC_VERSIONS=6.2 CONAN_USE_DOCKER=1
+    - CONAN_GCC_VERSIONS=6.3 CONAN_USE_DOCKER=1
+install:
+  - ./.travis/install.sh
+script:
+  - ./.travis/run.sh
