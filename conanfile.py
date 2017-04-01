@@ -9,6 +9,7 @@ class Apachelog4cxxConan(ConanFile):
     license = "Apache-2.0"
     url = "https://github.com/mkovalchik/conan-apache-log4cxx"
     settings = "os", "compiler", "build_type", "arch"
+    requires = "apache-apr/1.5.2@mkovalchik/stable"
     options = {
         "enable-wchar_t" : ["yes", "no"],
         "enable-unichar" : ["yes", "no"],
@@ -36,13 +37,15 @@ class Apachelog4cxxConan(ConanFile):
     def build(self):
         env_build = AutoToolsBuildEnvironment(self)
         with tools.environment_append(env_build.vars):
-            include_dir = os.path.join(os.getcwd(), "include")
-            lib_dir = os.path.join(os.getcwd(), "lib")
-            configure_command = "./configure --includedir=" + include_dir + " --libdir=" + lib_dir
+            configure_command = "./configure"
             if self.settings.os == "Windows":
-                configure_command = configure_command + ".bat"
+                configure_command += ".bat"
+            
+            configure_command += " --prefix=" + os.getcwd()
+            configure_command += " --with-apr=" + self.deps_cpp_info["apache-apr"].rootpath
+
             for key,value in self.options.items():
-                configure_command = configure_command + " --" + key + "=" + value
+                configure_command += " --" + key + "=" + value
 
             with tools.chdir(self.lib_name):
                 self.run(configure_command)
