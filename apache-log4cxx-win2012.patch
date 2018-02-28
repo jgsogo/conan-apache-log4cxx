@@ -1,0 +1,308 @@
+Index: src/main/include/log4cxx/asyncappender.h
+===================================================================
+--- src/main/include/log4cxx/asyncappender.h	(revision 2)
++++ src/main/include/log4cxx/asyncappender.h	(working copy)
+@@ -194,7 +194,11 @@
+                 /**
+                  * Event buffer.
+                 */
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++                typedef std::vector<log4cxx::spi::LoggingEventPtr> LoggingEventList;
++#else
+                 LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr);
++#endif
+                 LoggingEventList buffer;
+ 
+                 /**
+@@ -283,6 +287,11 @@
+         LOG4CXX_PTR_DEF(AsyncAppender);
+ }  //  namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::spi::LoggingEventPtr>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::spi::LoggingEventPtr>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+ #endif
+Index: src/main/include/log4cxx/helpers/bytearrayinputstream.h
+===================================================================
+--- src/main/include/log4cxx/helpers/bytearrayinputstream.h	(revision 2)
++++ src/main/include/log4cxx/helpers/bytearrayinputstream.h	(working copy)
+@@ -39,7 +39,11 @@
+           class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
+           {
+           private:
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++              typedef std::vector<unsigned char> ByteList;
++#else
+               LOG4CXX_LIST_DEF(ByteList, unsigned char);
++#endif
+               ByteList buf;
+               size_t pos;
+ 
+@@ -87,6 +91,11 @@
+ 
+ }  //namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
++	template class LOG4CXX_EXPORT std::vector<unsigned char>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+ #endif
+Index: src/main/include/log4cxx/helpers/bytearrayoutputstream.h
+===================================================================
+--- src/main/include/log4cxx/helpers/bytearrayoutputstream.h	(revision 2)
++++ src/main/include/log4cxx/helpers/bytearrayoutputstream.h	(working copy)
+@@ -41,7 +41,11 @@
+           class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
+           {
+           private:
++#if defined(_MSC_VER) && _MSC_VER == 1700
++                 typedef std::vector<unsigned char> ByteList;
++#else
+                  LOG4CXX_LIST_DEF(ByteList, unsigned char);
++#endif
+                  ByteList array;
+ 
+           public:
+@@ -69,6 +73,11 @@
+ 
+ }  //namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER == 1700
++	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
++	template class LOG4CXX_EXPORT std::vector<unsigned char>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+ #endif
+Index: src/main/include/log4cxx/helpers/simpledateformat.h
+===================================================================
+--- src/main/include/log4cxx/helpers/simpledateformat.h	(revision 2)
++++ src/main/include/log4cxx/helpers/simpledateformat.h	(working copy)
+@@ -75,7 +75,11 @@
+                   /**
+                    * List of tokens.
+                    */
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++                  typedef std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*> PatternTokenList;
++#else
+                   LOG4CXX_LIST_DEF(PatternTokenList, log4cxx::helpers::SimpleDateFormatImpl::PatternToken*);
++#endif
+ 
+                   PatternTokenList pattern;
+                   
+@@ -87,6 +91,11 @@
+         }  // namespace helpers
+ } // namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+ #endif
+Index: src/main/include/log4cxx/helpers/socketoutputstream.h
+===================================================================
+--- src/main/include/log4cxx/helpers/socketoutputstream.h	(revision 2)
++++ src/main/include/log4cxx/helpers/socketoutputstream.h	(working copy)
+@@ -50,7 +50,11 @@
+                         virtual void write(ByteBuffer& buf, Pool& p);
+ 
+                 private:
+-                        LOG4CXX_LIST_DEF(ByteList, unsigned char);
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++                        typedef std::vector<unsigned char> ByteList;
++#else
++                        LOG4CXX_LIST_DEF(ByteList, unsigned char);
++#endif
+                         ByteList array;
+                         SocketPtr socket;
+                        //
+@@ -65,6 +69,11 @@
+         }  // namespace helpers
+ } // namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
++	template class LOG4CXX_EXPORT std::vector<unsigned char>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+ #endif
+Index: src/main/include/log4cxx/net/sockethubappender.h
+===================================================================
+--- src/main/include/log4cxx/net/sockethubappender.h	(revision 2)
++++ src/main/include/log4cxx/net/sockethubappender.h	(working copy)
+@@ -112,7 +112,11 @@
+                         static int DEFAULT_PORT;
+ 
+                         int port;
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++                        typedef std::vector<log4cxx::helpers::ObjectOutputStreamPtr> ObjectOutputStreamList;
++#else
+                         LOG4CXX_LIST_DEF(ObjectOutputStreamList, log4cxx::helpers::ObjectOutputStreamPtr);
++#endif
+                         ObjectOutputStreamList streams;
+                         bool locationInfo;
+ 
+@@ -189,6 +193,10 @@
+         }  // namespace net
+ } // namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::helpers::ObjectOutputStreamPtr>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::helpers::ObjectOutputStreamPtr>;
++#endif
+ 
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+Index: src/main/include/log4cxx/net/telnetappender.h
+===================================================================
+--- src/main/include/log4cxx/net/telnetappender.h	(revision 2)
++++ src/main/include/log4cxx/net/telnetappender.h	(working copy)
+@@ -132,7 +132,11 @@
+                         TelnetAppender& operator=(const TelnetAppender&);
+ 
+                         typedef log4cxx::helpers::SocketPtr Connection;
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++                        typedef std::vector<Connection> ConnectionList;
++#else
+                         LOG4CXX_LIST_DEF(ConnectionList, Connection);
++#endif
+                         
+                         void write(log4cxx::helpers::ByteBuffer&);
+                         void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
+@@ -149,6 +153,10 @@
+     } // namespace net
+ } // namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::net::TelnetAppender::Connection>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::net::TelnetAppender::Connection>;
++#endif
+ 
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+Index: src/main/include/log4cxx/patternlayout.h
+===================================================================
+--- src/main/include/log4cxx/patternlayout.h	(revision 2)
++++ src/main/include/log4cxx/patternlayout.h	(working copy)
+@@ -334,13 +334,21 @@
+                 /**
+                  * Pattern converters.
+                  */
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++				typedef std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr> LoggingEventPatternConverterList;
++#else
+                 LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr);
++#endif
+                 LoggingEventPatternConverterList patternConverters;
+ 
+                /**
+                 * Field widths and alignment corresponding to pattern converters.
+                 */
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++				typedef std::vector<log4cxx::pattern::FormattingInfoPtr> FormattingInfoList;
++#else
+                 LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
++#endif
+                 FormattingInfoList patternFields;
+ 
+ 
+@@ -401,6 +409,14 @@
+       LOG4CXX_PTR_DEF(PatternLayout);
+ }  // namespace log4cxx
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::LoggingEventPatternConverterPtr>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr>;
++
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::FormattingInfoPtr>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::FormattingInfoPtr>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+ #endif
+Index: src/main/include/log4cxx/rolling/rollingpolicybase.h
+===================================================================
+--- src/main/include/log4cxx/rolling/rollingpolicybase.h	(revision 2)
++++ src/main/include/log4cxx/rolling/rollingpolicybase.h	(working copy)
+@@ -57,13 +57,21 @@
+           /**
+            * File name pattern converters.
+            */
+-          LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr);
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++          typedef std::vector<log4cxx::pattern::PatternConverterPtr> PatternConverterList;
++#else
++          LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr);
++#endif
+           PatternConverterList patternConverters;
+ 
+           /**
+            * File name field specifiers.
+            */
+-          LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++          typedef std::vector<log4cxx::pattern::FormattingInfoPtr> FormattingInfoList;
++#else
++          LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
++#endif
+           FormattingInfoList patternFields;
+ 
+           /**
+@@ -120,6 +128,13 @@
+     }
+ }
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::PatternConverterPtr>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::PatternConverterPtr>;
++
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::FormattingInfoPtr>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::FormattingInfoPtr>;
++#endif
+ 
+ #if defined(_MSC_VER)
+ #pragma warning ( pop )
+Index: src/main/include/log4cxx/spi/loggingevent.h
+===================================================================
+--- src/main/include/log4cxx/spi/loggingevent.h	(revision 2)
++++ src/main/include/log4cxx/spi/loggingevent.h	(working copy)
+@@ -152,7 +152,12 @@
+                         */
+                         bool getMDC(const LogString& key, LogString& dest) const;
+ 
+-                        LOG4CXX_LIST_DEF(KeySet, LogString);
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++						typedef std::vector<log4cxx::LogString> KeySet;
++#else
++						LOG4CXX_LIST_DEF(KeySet, LogString);
++#endif
++
+                         /**
+                         * Returns the set of of the key values in the MDC for the event.
+                         * The returned set is unmodifiable by the caller.
+@@ -255,6 +260,11 @@
+         }
+ }
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template class LOG4CXX_EXPORT std::allocator<log4cxx::LogString>;
++	template class LOG4CXX_EXPORT std::vector<log4cxx::LogString>;
++#endif
++
+ #if defined(_MSC_VER)
+ #pragma warning (pop)
+ #endif

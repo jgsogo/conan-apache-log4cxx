@@ -25,7 +25,7 @@ class Apachelog4cxxConan(ConanFile):
     }
     default_options = "enable-wchar_t=yes", "enable-unichar=no", "enable-cfstring=no", "with-logchar=utf-8", "with-charset=auto", "with-SMTP=no", "with-ODBC=no"
     lib_name = name + "-" + version
-    exports_sources = "char_widening.patch"
+    exports_sources = "*.patch"
 
     def configure(self):
         if self.settings.arch == "x86_64":
@@ -37,8 +37,9 @@ class Apachelog4cxxConan(ConanFile):
 
     def source(self):
         file_ext = ".tar.gz" if not self.settings.os == "Windows" else ".zip"
-        tools.download("http://archive.apache.org/dist/logging/log4cxx/{version}/{name}-{version}{ext}".format(name=self.name, version=self.version, ext=file_ext), self.lib_name + file_ext)
-        tools.unzip(self.lib_name + file_ext)
+        tools.get("http://archive.apache.org/dist/logging/log4cxx/{version}/{name}-{version}{ext}".format(name=self.name, version=self.version, ext=file_ext))
+        #tools.unzip(self.lib_name + file_ext)
+        tools.patch(base_path=self.lib_name, patch_file="apache-log4cxx-win2012.patch")
         #tools.patch(base_path=self.lib_name, patch_file="char_widening.patch")
 
         if self.settings.os == "Windows":
