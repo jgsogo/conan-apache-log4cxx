@@ -14,11 +14,12 @@ Index: src/main/include/log4cxx/asyncappender.h
                  LoggingEventList buffer;
  
                  /**
-@@ -283,6 +287,11 @@
+@@ -283,6 +287,12 @@
          LOG4CXX_PTR_DEF(AsyncAppender);
  }  //  namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::spi::LoggingEventPtr>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::spi::LoggingEventPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::spi::LoggingEventPtr>;
 +#endif
@@ -42,11 +43,12 @@ Index: src/main/include/log4cxx/helpers/bytearrayinputstream.h
                ByteList buf;
                size_t pos;
  
-@@ -87,6 +91,11 @@
+@@ -87,6 +91,12 @@
  
  }  //namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<unsigned char>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
 +	template class LOG4CXX_EXPORT std::vector<unsigned char>;
 +#endif
@@ -62,7 +64,7 @@ Index: src/main/include/log4cxx/helpers/bytearrayoutputstream.h
            class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
            {
            private:
-+#if defined(_MSC_VER) && _MSC_VER == 1700
++#if defined(_MSC_VER) && _MSC_VER >= 1700
 +                 typedef std::vector<unsigned char> ByteList;
 +#else
                   LOG4CXX_LIST_DEF(ByteList, unsigned char);
@@ -70,11 +72,12 @@ Index: src/main/include/log4cxx/helpers/bytearrayoutputstream.h
                   ByteList array;
  
            public:
-@@ -69,6 +73,11 @@
+@@ -69,6 +73,12 @@
  
  }  //namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER == 1700
++	template std::vector<unsigned char>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
 +	template class LOG4CXX_EXPORT std::vector<unsigned char>;
 +#endif
@@ -98,11 +101,12 @@ Index: src/main/include/log4cxx/helpers/simpledateformat.h
  
                    PatternTokenList pattern;
                    
-@@ -87,6 +91,11 @@
+@@ -87,6 +91,12 @@
          }  // namespace helpers
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>;
 +#endif
@@ -127,11 +131,12 @@ Index: src/main/include/log4cxx/helpers/socketoutputstream.h
                          ByteList array;
                          SocketPtr socket;
                         //
-@@ -65,6 +69,11 @@
+@@ -65,6 +69,12 @@
          }  // namespace helpers
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<unsigned char>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
 +	template class LOG4CXX_EXPORT std::vector<unsigned char>;
 +#endif
@@ -155,11 +160,12 @@ Index: src/main/include/log4cxx/net/sockethubappender.h
                          ObjectOutputStreamList streams;
                          bool locationInfo;
  
-@@ -189,6 +193,10 @@
+@@ -189,6 +193,11 @@
          }  // namespace net
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::helpers::ObjectOutputStreamPtr>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::helpers::ObjectOutputStreamPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::helpers::ObjectOutputStreamPtr>;
 +#endif
@@ -182,11 +188,12 @@ Index: src/main/include/log4cxx/net/telnetappender.h
                          
                          void write(log4cxx::helpers::ByteBuffer&);
                          void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
-@@ -149,6 +153,10 @@
+@@ -149,6 +153,11 @@
      } // namespace net
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::helpers::SocketPtr>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::net::TelnetAppender::Connection>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::net::TelnetAppender::Connection>;
 +#endif
@@ -219,11 +226,13 @@ Index: src/main/include/log4cxx/patternlayout.h
                  FormattingInfoList patternFields;
  
  
-@@ -401,6 +409,14 @@
+@@ -401,6 +409,16 @@
        LOG4CXX_PTR_DEF(PatternLayout);
  }  // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::pattern::FormattingInfoPtr>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::LoggingEventPatternConverterPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr>;
 +
@@ -262,11 +271,13 @@ Index: src/main/include/log4cxx/rolling/rollingpolicybase.h
            FormattingInfoList patternFields;
  
            /**
-@@ -120,6 +128,13 @@
+@@ -120,6 +128,15 @@
      }
  }
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::pattern::PatternConverterPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::pattern::FormattingInfoPtr>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::PatternConverterPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::PatternConverterPtr>;
 +
@@ -294,11 +305,12 @@ Index: src/main/include/log4cxx/spi/loggingevent.h
                          /**
                          * Returns the set of of the key values in the MDC for the event.
                          * The returned set is unmodifiable by the caller.
-@@ -255,6 +260,11 @@
+@@ -255,6 +260,12 @@
          }
  }
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
++	template std::vector<log4cxx::LogString>::vector() noexcept(true);
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::LogString>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::LogString>;
 +#endif

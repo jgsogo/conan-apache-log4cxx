@@ -38,9 +38,8 @@ class Apachelog4cxxConan(ConanFile):
     def source(self):
         file_ext = ".tar.gz" if not self.settings.os == "Windows" else ".zip"
         tools.get("http://archive.apache.org/dist/logging/log4cxx/{version}/{name}-{version}{ext}".format(name=self.name, version=self.version, ext=file_ext))
-        #tools.unzip(self.lib_name + file_ext)
         tools.patch(base_path=self.lib_name, patch_file="apache-log4cxx-win2012.patch")
-        #tools.patch(base_path=self.lib_name, patch_file="char_widening.patch")
+        # tools.patch(base_path=self.lib_name, patch_file="char_widening.patch")
 
         if self.settings.os == "Windows":
             apr_version = "1.3.8" # "1.2.11"
@@ -50,6 +49,13 @@ class Apachelog4cxxConan(ConanFile):
             tools.get("http://archive.apache.org/dist/apr/apr-util-{apr_util_version}-win32-src.zip".format(apr_util_version=apr_util_version))
             os.rename('apr-util-{apr_util_version}'.format(apr_util_version=apr_util_version), 'apr-util')
 
+    def fix_bug_vs2017(self):
+        # https://developercommunity.visualstudio.com/content/problem/171628/noexceptvariable-template-can-cause-c2057c1903ice.html
+        #  - patch
+        # input_iterator:
+        tools.replace_in_file(os.path.join(self.lib_name, "src", "main", "cpp", "stringhelper.cpp"),
+                              "#include <vector>", "#include <vector>\n#include <iterator>")
+
     def build(self):
         if self.settings.os == "Windows":
             tools.replace_in_file(os.path.join("apr-util", "include", "apu.hw"),
@@ -58,6 +64,7 @@ class Apachelog4cxxConan(ConanFile):
             tools.replace_in_file(os.path.join("apr-util", "include", "apr_ldap.hw"),
                                   "#define APR_HAS_LDAP		    1",
                                   "#define APR_HAS_LDAP		    0")
+            self.fix_bug_vs2017()
             with tools.chdir(self.lib_name):
                 self.run("configure")
                 # self.run("configure-aprutil")
