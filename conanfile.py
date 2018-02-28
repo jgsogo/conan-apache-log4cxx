@@ -55,6 +55,10 @@ class Apachelog4cxxConan(ConanFile):
         # input_iterator:
         tools.replace_in_file(os.path.join(self.lib_name, "src", "main", "cpp", "stringhelper.cpp"),
                               "#include <vector>", "#include <vector>\n#include <iterator>")
+        # https://stackoverflow.com/questions/26612338/building-log4cxx-under-visual-studio-2013
+        tools.replace_in_file(os.path.join("apr", "atomic", "win32", "apr_atomic.c"),
+                              "defined(_M_IA64) || defined(_M_AMD64)",
+                              "defined(_M_IA64) || defined(_M_AMD64) || (_MSC_VER >= 1700)")
 
     def build(self):
         if self.settings.os == "Windows":
