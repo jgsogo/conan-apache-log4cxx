@@ -96,9 +96,11 @@ class Apachelog4cxxConan(ConanFile):
                     self.run("make install ")
 
     def package(self):
-        self.copy("*.so*", dst="lib", src="lib", keep_path=False)
-        self.copy("*.a", dst="lib", src="lib", keep_path=False)
-        self.copy("*.h", dst="include", src="include", keep_path=True)
+        self.copy("*.h", dst="include", src=os.path.join(self.lib_name, 'src', 'main', 'include'), keep_path=True)
+        self.copy("*.lib", dst="lib", src=self.lib_name, keep_path=False)
+        self.copy("*.dll", dst="bin", src=self.lib_name, keep_path=False)
+        self.copy("*.so*", dst="lib", src=self.lib_name, keep_path=False)
+        self.copy("*.a", dst="lib", src=self.lib_name, keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ["log4cxx"]
