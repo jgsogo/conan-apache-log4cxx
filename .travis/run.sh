@@ -5,9 +5,9 @@ set -x
 
 if [[ "$(uname -s)" == 'Darwin' ]]; then
     if which pyenv > /dev/null; then
-	eval "$(pyenv init -)"
+        eval "$(pyenv init -)"
     fi
     pyenv activate conan
 fi
 
-python build.py
+run_ci conanfile.py -vv

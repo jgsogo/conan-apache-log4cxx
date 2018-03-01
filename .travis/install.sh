@@ -7,9 +7,10 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
     brew update || brew update
     brew outdated pyenv || brew upgrade pyenv
     brew install pyenv-virtualenv
+    brew install cmake || true
 
     if which pyenv > /dev/null; then
-	eval "$(pyenv init -)"
+        eval "$(pyenv init -)"
     fi
 
     pyenv install 2.7.10
@@ -18,5 +19,7 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
     pyenv activate conan
 fi
 
-pip install conan_package_tools # This package installs conan too
+pip install conan --upgrade
+pip install conan_sword_and_sorcery
+
 conan user
