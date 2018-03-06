@@ -6,5 +6,5 @@ int main() {
     log4cxx::BasicConfigurator::configure();
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "Hello, World!");
 
-    return EXIT_SUCCESS;
+    return 0;
 }
