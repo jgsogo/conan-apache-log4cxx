@@ -32,8 +32,8 @@ class Apachelog4cxxConan(ConanFile):
             raise ConanException("x64 fails :/")
 
     def requirements(self):
-        if self.settings.os != "Windows":
-            self.requires.add("apache-apr/1.5.2@jgsogo/testing")
+        self.requires.add("apache-apr/1.6.3@jgsogo/stable")
+        self.requires.add("apache-apr-util/1.6.1@jgsogo/stable")
 
     def source(self):
         file_ext = ".tar.gz" if not self.settings.os == "Windows" else ".zip"
@@ -41,33 +41,29 @@ class Apachelog4cxxConan(ConanFile):
         tools.patch(base_path=self.lib_name, patch_file="apache-log4cxx-win2012.patch")
         # tools.patch(base_path=self.lib_name, patch_file="char_widening.patch")
 
-        if self.settings.os == "Windows":
-            apr_version = "1.3.8" # "1.2.11"
-            apr_util_version = "1.3.9"  # "1.2.10"
-            tools.get("http://archive.apache.org/dist/apr/apr-{apr_version}-win32-src.zip".format(apr_version=apr_version))
-            os.rename('apr-{apr_version}'.format(apr_version=apr_version), 'apr')
-            tools.get("http://archive.apache.org/dist/apr/apr-util-{apr_util_version}-win32-src.zip".format(apr_util_version=apr_util_version))
-            os.rename('apr-util-{apr_util_version}'.format(apr_util_version=apr_util_version), 'apr-util')
-
     def fix_bug_vs2017(self):
         # https://developercommunity.visualstudio.com/content/problem/171628/noexceptvariable-template-can-cause-c2057c1903ice.html
         #  - patch
         # input_iterator:
         tools.replace_in_file(os.path.join(self.lib_name, "src", "main", "cpp", "stringhelper.cpp"),
                               "#include <vector>", "#include <vector>\n#include <iterator>")
+        """
         # https://stackoverflow.com/questions/26612338/building-log4cxx-under-visual-studio-2013
         tools.replace_in_file(os.path.join("apr", "atomic", "win32", "apr_atomic.c"),
                               "defined(_M_IA64) || defined(_M_AMD64)",
                               "defined(_M_IA64) || defined(_M_AMD64) || (_MSC_VER >= 1700)")
+        """
 
     def build(self):
         if self.settings.os == "Windows":
+            """
             tools.replace_in_file(os.path.join("apr-util", "include", "apu.hw"),
                                   "#define APU_HAVE_APR_ICONV      1",
                                   "#define APU_HAVE_APR_ICONV      0")
             tools.replace_in_file(os.path.join("apr-util", "include", "apr_ldap.hw"),
                                   "#define APR_HAS_LDAP		    1",
                                   "#define APR_HAS_LDAP		    0")
+            """
             self.fix_bug_vs2017()
             with tools.chdir(self.lib_name):
                 self.run("configure")
@@ -80,27 +76,18 @@ class Apachelog4cxxConan(ConanFile):
                     print("Try again: {}".format(e))
                     msbuild.build(os.path.join("projects", "log4cxx.sln"), upgrade_project=False)
         else:
-            configure_command = "configure"
-            configure_command += " --prefix=" + os.getcwd()
-            configure_command += " --with-apr=" + self.deps_cpp_info["apache-apr"].rootpath
-
+            env_build = AutoToolsBuildEnvironment(self)
+            args = ['--prefix', self.package_folder,
+                    '--with-apr={}'.format(os.path.join(self.deps_cpp_info["apache-apr"].rootpath)),
+                    ]
             for key, value in self.options.items():
-                configure_command += " --" + key + "=" + value
+                args += " --" + key + "=" + value
 
-            with tools.chdir(self.lib_name):
-                env_build = AutoToolsBuildEnvironment(self)
-                with tools.environment_append(env_build.vars):
-                    self.run(configure_command)
-                    self.run("make -j " + str(max(tools.cpu_count() - 1, 1)))
-                    self.run("make check")
-                    self.run("make install ")
-
-    def package(self):
-        self.copy("*.h", dst="include", src=os.path.join(self.lib_name, 'src', 'main', 'include'), keep_path=True)
-        self.copy("*.lib", dst="lib", src=self.lib_name, keep_path=False)
-        self.copy("*.dll", dst="bin", src=self.lib_name, keep_path=False)
-        self.copy("*.so*", dst="lib", src=self.lib_name, keep_path=False)
-        self.copy("*.a", dst="lib", src=self.lib_name, keep_path=False)
+            env_build.configure(configure_dir=self.lib_name,
+                                args=args,
+                                build=False)  # TODO: Workaround for https://github.com/conan-io/conan/issues/2552
+            env_build.make()
+            env_build.make(args=['install'])
 
     def package_info(self):
-        self.cpp_info.libs = ["log4cxx"]
+        self.cpp_info.libs = tools.collect_libs(self)
