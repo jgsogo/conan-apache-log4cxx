@@ -24,7 +24,7 @@ class Apachelog4cxxConan(ConanFile):
     }
     default_options = "enable-wchar_t=yes", "enable-unichar=no", "enable-cfstring=no", "with-logchar=utf-8", "with-charset=auto", "with-SMTP=no", "with-ODBC=no"
     lib_name = "logging-log4cxx-" + version.replace('.', '_')
-    exports_sources = ["CMakeLists.txt", "*.cmake",]
+    exports_sources = ["CMakeLists.txt", "*.cmake", "*.patch"]
     generators = "cmake"
 
     def requirements(self):
@@ -37,6 +37,9 @@ class Apachelog4cxxConan(ConanFile):
     def patch(self):
         if self.settings.os == "Windows":
             tools.patch(base_path=self.lib_name, patch_file="apache-log4cxx-win2012.patch")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'stringhelper.cpp'),
+                                  "#include <apr.h>",
+                                  "#include <apr.h>\n#include <iterator>")
         else:
             tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'inputstreamreader.cpp'),
                                   "#include <log4cxx/helpers/bytebuffer.h>",
