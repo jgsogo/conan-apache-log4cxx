@@ -35,24 +35,27 @@ class Apachelog4cxxConan(ConanFile):
         tools.get("https://github.com/apache/logging-log4cxx/archive/v{version}.tar.gz".format(version=self.version.replace(".", "_")))
 
     def patch(self):
-        tools.patch(self.lib_name, "apache-log4cxx-win2012.patch")
-        tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'inputstreamreader.cpp'),
-                              "#include <log4cxx/helpers/bytebuffer.h>",
-                              "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
-        tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'socketoutputstream.cpp'),
-                              "#include <log4cxx/helpers/bytebuffer.h>",
-                              "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
-        tools.replace_in_file(os.path.join(self.lib_name, 'src', 'examples', 'cpp', 'console.cpp'),
-                              "#include <locale.h>",
-                              "#include <locale.h>\n#include <cstdio>\n#include <cstring>")
-        tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'private', 'Makefile.am'),
-                              "privateinc_HEADERS= $(top_builddir)/src/main/include/log4cxx/private/*.h log4cxx_private.h",
-                              "privateinc_HEADERS= $(top_builddir)/src/main/include/log4cxx/private/*.h")
-        tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'Makefile.am'),
-                              "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h log4cxx.h",
-                              "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h")
+        if self.settings.os == "Windows":
+            tools.patch(base_path=self.lib_name, patch_file="apache-log4cxx-win2012.patch")
+        else:
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'inputstreamreader.cpp'),
+                                  "#include <log4cxx/helpers/bytebuffer.h>",
+                                  "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'socketoutputstream.cpp'),
+                                  "#include <log4cxx/helpers/bytebuffer.h>",
+                                  "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'examples', 'cpp', 'console.cpp'),
+                                  "#include <locale.h>",
+                                  "#include <locale.h>\n#include <cstdio>\n#include <cstring>")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'private', 'Makefile.am'),
+                                  "privateinc_HEADERS= $(top_builddir)/src/main/include/log4cxx/private/*.h log4cxx_private.h",
+                                  "privateinc_HEADERS= $(top_builddir)/src/main/include/log4cxx/private/*.h")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'Makefile.am'),
+                                  "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h log4cxx.h",
+                                  "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h")
 
     def build(self):
+        self.patch()
         if self.settings.os == "Windows":
             cmake = CMake(self)
             cmake.definitions["APR_ALTLOCATION"] = self.deps_cpp_info["apache-apr"].rootpath
@@ -62,7 +65,6 @@ class Apachelog4cxxConan(ConanFile):
             cmake.build()
             cmake.install()
         else:
-            self.patch()
             with tools.chdir(self.lib_name):
                 self.run("./autogen.sh")
 
