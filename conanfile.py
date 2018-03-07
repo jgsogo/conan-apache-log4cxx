@@ -14,6 +14,7 @@ class Apachelog4cxxConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     # TODO: Options here https://logging.apache.org/log4cxx/latest_stable/building/autotools.html
     options = {
+        "shared": [True, False],
         "enable-wchar_t" : ["yes", "no"],
         "enable-unichar" : ["yes", "no"],
         "enable-cfstring" : ["yes", "no"],
@@ -22,7 +23,7 @@ class Apachelog4cxxConan(ConanFile):
         "with-SMTP" : ["libesmtp", "no"],
         "with-ODBC" : ["unixODBC", "iODBC", "Microsoft", "no"]
     }
-    default_options = "enable-wchar_t=yes", "enable-unichar=no", "enable-cfstring=no", "with-logchar=utf-8", "with-charset=auto", "with-SMTP=no", "with-ODBC=no"
+    default_options = "enable-wchar_t=yes", "enable-unichar=no", "enable-cfstring=no", "with-logchar=utf-8", "with-charset=auto", "with-SMTP=no", "with-ODBC=no", "shared=True"
     lib_name = "logging-log4cxx-" + version.replace('.', '_')
     exports_sources = ["CMakeLists.txt", "*.cmake", "*.patch"]
     generators = "cmake"
@@ -63,7 +64,7 @@ class Apachelog4cxxConan(ConanFile):
             cmake = CMake(self)
             cmake.definitions["APR_ALTLOCATION"] = self.deps_cpp_info["apache-apr"].rootpath
             cmake.definitions["APRUTIL_ALTLOCATION"] = self.deps_cpp_info["apache-apr-util"].rootpath
-
+            cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
             cmake.configure()
             cmake.build()
             cmake.install()

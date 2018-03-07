@@ -18,6 +18,10 @@ message(STATUS "Configuring build environment for ${PROJECT_NAME} version ${PROJ
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
+### options
+option(BUILD_SHARED_LIBS "Build shared libraries instead of static" ON)
+option(MSVC_SHARED_RUNTIME "Build using shared Microsoft Runtime (MSVC-only)" ON)
+
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
@@ -44,8 +48,6 @@ set(LOG4CXX_INCLUDE_DIRECTORIES
   ${APR_INCLUDE_DIR}
   ${APRUTIL_INCLUDE_DIR}
   )
-
-message("LOG4CXX_INCLUDE_DIRECTORIES >> ${LOG4CXX_INCLUDE_DIRECTORIES}")
 
 file(GLOB_RECURSE LOG4CXX_HEADERS ${LOG4CXX_DIR}/include/log4cxx/*.h)
 file(GLOB_RECURSE LOG4CXX_SRC ${LOG4CXX_DIR}/cpp/*.cpp)
