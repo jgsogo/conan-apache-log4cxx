@@ -27,6 +27,7 @@ conan_basic_setup()
 
 find_package(APR)
 find_package(APRUtil)
+find_package(Expat)
 
 include(PlatformSpecific)
 
@@ -54,8 +55,8 @@ file(GLOB_RECURSE LOG4CXX_SRC ${LOG4CXX_DIR}/cpp/*.cpp)
 
 add_library(${PROJECT_NAME} ${LOG4CXX_SRC} ${LOG4CXX_HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${LOG4CXX_INCLUDE_DIRECTORIES})
-target_link_libraries(${PROJECT_NAME}
-  ${APR_LIBRARIES}
+target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS}
+#  ${APR_LIBRARIES}
 # odbc32
 # rpcrt4
 # ws2_32
