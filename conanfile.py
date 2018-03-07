@@ -35,6 +35,7 @@ class Apachelog4cxxConan(ConanFile):
         tools.get("https://github.com/apache/logging-log4cxx/archive/v{version}.tar.gz".format(version=self.version.replace(".", "_")))
 
     def patch(self):
+        tools.patch(self.lib_name, "apache-log4cxx-win2012.patch")
         tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'inputstreamreader.cpp'),
                               "#include <log4cxx/helpers/bytebuffer.h>",
                               "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
