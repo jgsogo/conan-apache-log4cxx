@@ -24,6 +24,7 @@ conan_basic_setup()
 find_package(APR)
 find_package(APRUtil)
 
+include(PlatformSpecific)
 
 set(LOG4CXX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/logging-log4cxx-0_10_0/src/main")  # TODO: Pass library source directory (needed here and in TODO before)
 
