@@ -78,7 +78,8 @@ class Apachelog4cxxConan(ConanFile):
                     '--with-apr-util={}'.format(os.path.join(self.deps_cpp_info["apache-apr-util"].rootpath)),
                     ]
             for key, value in self.options.items():
-                args += ["--{}={}".format(key, value),]
+                if key != 'shared':
+                    args += ["--{}={}".format(key, value), ]
 
             env_build.configure(configure_dir=self.lib_name, args=args)
             env_build.make()
