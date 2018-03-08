@@ -57,6 +57,9 @@ class Apachelog4cxxConan(ConanFile):
             tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'Makefile.am'),
                                   "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h log4cxx.h",
                                   "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'locationinfo.cpp'),
+                                  "0x78, 0x70 };",
+                                  "static_cast<logchar>(0x78), static_cast<logchar>(0x70) };")
 
     def build(self):
         self.patch()
