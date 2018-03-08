@@ -15,13 +15,13 @@ class Apachelog4cxxConan(ConanFile):
     # TODO: Options here https://logging.apache.org/log4cxx/latest_stable/building/autotools.html
     options = {
         "shared": [True, False],
-        "enable-wchar_t" : ["yes", "no"],
-        "enable-unichar" : ["yes", "no"],
-        "enable-cfstring" : ["yes", "no"],
-        "with-logchar" : ["utf-8", "wchar_t", "unichar"],
-        "with-charset" : ["utf-8", "iso-8859-1", "usascii", "ebcdic", "auto"],
-        "with-SMTP" : ["libesmtp", "no"],
-        "with-ODBC" : ["unixODBC", "iODBC", "Microsoft", "no"]
+        "enable-wchar_t": ["yes", "no"],
+        "enable-unichar": ["yes", "no"],
+        "enable-cfstring": ["yes", "no"],
+        "with-logchar": ["utf-8", "wchar_t", "unichar"],
+        "with-charset": ["utf-8", "iso-8859-1", "usascii", "ebcdic", "auto"],
+        "with-SMTP": ["libesmtp", "no"],
+        "with-ODBC": ["unixODBC", "iODBC", "Microsoft", "no"]
     }
     default_options = "enable-wchar_t=yes", "enable-unichar=no", "enable-cfstring=no", "with-logchar=utf-8", "with-charset=auto", "with-SMTP=no", "with-ODBC=no", "shared=True"
     lib_name = "logging-log4cxx-" + version.replace('.', '_')
@@ -89,4 +89,8 @@ class Apachelog4cxxConan(ConanFile):
         self.copy("*.h", dst="include", src=os.path.join(self.lib_name, 'src', 'main', 'include'), keep_path=True)
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        if self.options.shared:
+            self.cpp_info.libs = tools.collect_libs(self)
+        else:
+            self.cpp_info.libs = tools.collect_libs(self) + ["odbc32", "mswsock", ]
+            self.cpp_info.defines = ["LOG4CXX_STATIC", ]

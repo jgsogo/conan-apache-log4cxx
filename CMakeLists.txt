@@ -55,12 +55,7 @@ file(GLOB_RECURSE LOG4CXX_SRC ${LOG4CXX_DIR}/cpp/*.cpp)
 
 add_library(${PROJECT_NAME} ${LOG4CXX_SRC} ${LOG4CXX_HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${LOG4CXX_INCLUDE_DIRECTORIES})
-target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS}
-#  ${APR_LIBRARIES}
-# odbc32
-# rpcrt4
-# ws2_32
-)
+target_link_libraries(${PROJECT_NAME} odbc32 mswsock ${CONAN_LIBS})
 
 install(
   TARGETS ${PROJECT_NAME}
