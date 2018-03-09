@@ -42,24 +42,14 @@ class Apachelog4cxxConan(ConanFile):
                                   "#include <apr.h>",
                                   "#include <apr.h>\n#include <iterator>")
         else:
-            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'inputstreamreader.cpp'),
-                                  "#include <log4cxx/helpers/bytebuffer.h>",
-                                  "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
-            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'socketoutputstream.cpp'),
-                                  "#include <log4cxx/helpers/bytebuffer.h>",
-                                  "#include <log4cxx/helpers/bytebuffer.h>\n#include <string.h>")
-            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'examples', 'cpp', 'console.cpp'),
-                                  "#include <locale.h>",
-                                  "#include <locale.h>\n#include <cstdio>\n#include <cstring>")
+            tools.patch(base_path=self.lib_name, patch_file="log4cxx-1-gcc.4.4.patch")
+            tools.patch(base_path=self.lib_name, patch_file="log4cxx-5-gcc6-fix-narrowing-conversion.patch")
             tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'private', 'Makefile.am'),
                                   "privateinc_HEADERS= $(top_builddir)/src/main/include/log4cxx/private/*.h log4cxx_private.h",
                                   "privateinc_HEADERS= $(top_builddir)/src/main/include/log4cxx/private/*.h")
             tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'Makefile.am'),
                                   "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h log4cxx.h",
                                   "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h")
-            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'locationinfo.cpp'),
-                                  "0x78, 0x70 };",
-                                  "static_cast<logchar>(0x78), static_cast<logchar>(0x70) };")
 
     def build(self):
         self.patch()
