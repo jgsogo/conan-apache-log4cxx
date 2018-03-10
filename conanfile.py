@@ -74,7 +74,9 @@ class Apachelog4cxxConan(ConanFile):
                 if key != 'shared':
                     args += ["--{}={}".format(key, value), ]
 
-            env_build.configure(configure_dir=self.lib_name, args=args)
+            env_build.configure(configure_dir=self.lib_name,
+                                host=self.settings.arch,
+                                args=args)
             env_build.make()
             env_build.make(args=['install'])
 
