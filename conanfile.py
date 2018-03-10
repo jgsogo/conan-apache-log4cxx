@@ -50,6 +50,16 @@ class Apachelog4cxxConan(ConanFile):
             tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'Makefile.am'),
                                   "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h log4cxx.h",
                                   "log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h")
+            # Brew patch: https://github.com/Homebrew/legacy-homebrew/blob/56b57d583e874e6dfe7a417d329a147e4d4b064f/Library/Formula/log4cxx.rb
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'helpers', 'simpledateformat.h'),
+                                  "#include <vector>",
+                                  "#include <vector>\n#include <locale>")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'include', 'log4cxx', 'helpers', 'simpledateformat.h'),
+                                  "namespace std { class locale; }",
+                                  "")
+            tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'stringhelper.cpp'),
+                                  "#include <cctype>",
+                                  "#include <cctype>\n#include <cstdlib>")
 
     def build(self):
         self.patch()
