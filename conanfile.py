@@ -37,7 +37,7 @@ class Apachelog4cxxConan(ConanFile):
 
     def patch(self):
         if self.settings.os == "Windows":
-            if int(self.settings.compiler.version) <=12:
+            if int(self.settings.compiler.version.value) <=12:
                 # Remove noexcept, keyword not supported for msvc<=12
                 tools.replace_in_file("apache-log4cxx-win2012.patch",
                                       "noexcept(true)",
