@@ -19,7 +19,7 @@ Index: src/main/include/log4cxx/asyncappender.h
  }  //  namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::spi::LoggingEventPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::spi::LoggingEventPtr>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::spi::LoggingEventPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::spi::LoggingEventPtr>;
 +#endif
@@ -48,7 +48,7 @@ Index: src/main/include/log4cxx/helpers/bytearrayinputstream.h
  }  //namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<unsigned char>::vector() noexcept(true);
++	template std::vector<unsigned char>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
 +	template class LOG4CXX_EXPORT std::vector<unsigned char>;
 +#endif
@@ -77,7 +77,7 @@ Index: src/main/include/log4cxx/helpers/bytearrayoutputstream.h
  }  //namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER == 1700
-+	template std::vector<unsigned char>::vector() noexcept(true);
++	template std::vector<unsigned char>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
 +	template class LOG4CXX_EXPORT std::vector<unsigned char>;
 +#endif
@@ -106,7 +106,7 @@ Index: src/main/include/log4cxx/helpers/simpledateformat.h
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>::vector() noexcept(true);
++	template std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*>;
 +#endif
@@ -136,7 +136,7 @@ Index: src/main/include/log4cxx/helpers/socketoutputstream.h
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<unsigned char>::vector() noexcept(true);
++	template std::vector<unsigned char>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<unsigned char>;
 +	template class LOG4CXX_EXPORT std::vector<unsigned char>;
 +#endif
@@ -165,7 +165,7 @@ Index: src/main/include/log4cxx/net/sockethubappender.h
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::helpers::ObjectOutputStreamPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::helpers::ObjectOutputStreamPtr>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::helpers::ObjectOutputStreamPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::helpers::ObjectOutputStreamPtr>;
 +#endif
@@ -193,7 +193,7 @@ Index: src/main/include/log4cxx/net/telnetappender.h
  } // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::helpers::SocketPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::helpers::SocketPtr>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::net::TelnetAppender::Connection>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::net::TelnetAppender::Connection>;
 +#endif
@@ -231,8 +231,8 @@ Index: src/main/include/log4cxx/patternlayout.h
  }  // namespace log4cxx
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr>::vector() noexcept(true);
-+	template std::vector<log4cxx::pattern::FormattingInfoPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr>::vector();
++	template std::vector<log4cxx::pattern::FormattingInfoPtr>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::LoggingEventPatternConverterPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr>;
 +
@@ -276,8 +276,8 @@ Index: src/main/include/log4cxx/rolling/rollingpolicybase.h
  }
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::pattern::PatternConverterPtr>::vector() noexcept(true);
-+	template std::vector<log4cxx::pattern::FormattingInfoPtr>::vector() noexcept(true);
++	template std::vector<log4cxx::pattern::PatternConverterPtr>::vector();
++	template std::vector<log4cxx::pattern::FormattingInfoPtr>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::pattern::PatternConverterPtr>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::pattern::PatternConverterPtr>;
 +
@@ -310,7 +310,7 @@ Index: src/main/include/log4cxx/spi/loggingevent.h
  }
  
 +#if defined(_MSC_VER) && _MSC_VER >= 1700
-+	template std::vector<log4cxx::LogString>::vector() noexcept(true);
++	template std::vector<log4cxx::LogString>::vector();
 +	template class LOG4CXX_EXPORT std::allocator<log4cxx::LogString>;
 +	template class LOG4CXX_EXPORT std::vector<log4cxx::LogString>;
 +#endif
