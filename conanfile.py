@@ -37,10 +37,16 @@ class Apachelog4cxxConan(ConanFile):
 
     def patch(self):
         if self.settings.os == "Windows":
+            if int(self.compiler.version) <=12:
+                # Remove noexcept, keyword not supported for msvc<=12
+                tools.replace_in_file("apache-log4cxx-win2012.patch",
+                                      "noexcept(true)",
+                                      "")
             tools.patch(base_path=self.lib_name, patch_file="apache-log4cxx-win2012.patch")
             tools.replace_in_file(os.path.join(self.lib_name, 'src', 'main', 'cpp', 'stringhelper.cpp'),
                                   "#include <apr.h>",
                                   "#include <apr.h>\n#include <iterator>")
+
         else:
             tools.patch(base_path=self.lib_name, patch_file="log4cxx-1-gcc.4.4.patch")
             tools.patch(base_path=self.lib_name, patch_file="log4cxx-5-gcc6-fix-narrowing-conversion.patch")
